@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.705
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shuttle.Esb.NetMQ", "Shuttle.Esb.NetMQ\Shuttle.Esb.NetMQ.csproj", "{61CD2260-214C-40B5-8598-E90CBC425D7E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F753E92F-02DC-4FBD-957F-D8257DEDEF81}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shuttle.Esb.NetMQ.Server", "Shuttle.Esb.NetMQ.Server\Shuttle.Esb.NetMQ.Server.csproj", "{BD3B82C3-06CE-4966-B320-314A70AC7960}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shuttle.Esb.NetMQ.Tests", "Shuttle.Esb.NetMQ.Tests\Shuttle.Esb.NetMQ.Tests.csproj", "{89902032-5AB4-4C38-BBA2-0AFF185721E2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61CD2260-214C-40B5-8598-E90CBC425D7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61CD2260-214C-40B5-8598-E90CBC425D7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61CD2260-214C-40B5-8598-E90CBC425D7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61CD2260-214C-40B5-8598-E90CBC425D7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD3B82C3-06CE-4966-B320-314A70AC7960}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD3B82C3-06CE-4966-B320-314A70AC7960}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD3B82C3-06CE-4966-B320-314A70AC7960}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD3B82C3-06CE-4966-B320-314A70AC7960}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89902032-5AB4-4C38-BBA2-0AFF185721E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89902032-5AB4-4C38-BBA2-0AFF185721E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89902032-5AB4-4C38-BBA2-0AFF185721E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89902032-5AB4-4C38-BBA2-0AFF185721E2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2FE05426-A804-4C3B-A7A7-016A1262E554}
+	EndGlobalSection
+EndGlobal

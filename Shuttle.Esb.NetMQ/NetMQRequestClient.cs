@@ -1,0 +1,75 @@
+﻿using System;
+using System.IO;
+using System.Net;
+using NetMQ;
+using NetMQ.Sockets;
+using Shuttle.Core.Contract;
+using Shuttle.Core.Serialization;
+using Shuttle.Core.Streams;
+using Shuttle.Esb.NetMQ.Frames;
+
+namespace Shuttle.Esb.NetMQ
+{
+    public class NetMQRequestClient : INetMQRequestClient, IDisposable
+    {
+        private readonly Type _transportFrameType = typeof(TransportFrame);
+
+        private readonly TimeSpan _timeout;
+        private readonly RequestSocket _requestSocket;
+        private readonly ISerializer _serializer;
+        
+        public NetMQRequestClient(ISerializer serializer, IPEndPoint ipEndPoint, TimeSpan timeout)
+        {
+            Guard.AgainstNull(serializer, nameof(serializer));
+            Guard.AgainstNull(ipEndPoint, nameof(ipEndPoint));
+
+            _serializer = serializer;
+            _timeout = timeout;
+
+            _requestSocket = new RequestSocket();
+            _requestSocket.Connect($"tcp://{ipEndPoint.Address}:{ipEndPoint.Port}");
+        }
+
+        public TResponse GetResponse<TResponse>(object request, string queueName) 
+        {
+            Guard.AgainstNull(request, nameof(request));
+            Guard.AgainstNullOrEmptyString(queueName, nameof(queueName));
+
+            TransportFrame frame;
+
+            using (var stream = _serializer.Serialize(request))
+            {
+                frame = new TransportFrame
+                {
+                    QueueName = queueName,
+                    TypeName = request.GetType().FullName,
+                    Data = stream.ToBytes()
+                };
+            }
+
+            using (var stream = _serializer.Serialize(frame))
+            {
+                if (!_requestSocket.TrySendFrame(_timeout, stream.ToBytes()) ||
+                    !_requestSocket.TryReceiveFrameBytes(_timeout, out var bytes))
+                {
+                    throw NetMQException.For(typeof(TResponse).FullName, frame.TypeName, Resources.CommunicationException);
+                }
+
+                using (var ms = new MemoryStream(bytes))
+                {
+                    frame = (TransportFrame)_serializer.Deserialize(_transportFrameType, ms);
+                }
+
+                using (var ms = new MemoryStream(frame.Data))
+                {
+                    return (TResponse) _serializer.Deserialize(typeof(TResponse), ms);
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            _requestSocket?.Dispose();
+        }
+    }
+}
