@@ -16,4 +16,13 @@
     <ProjectReference Include="..\Shuttle.Esb.NetMQ\Shuttle.Esb.NetMQ.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include=".files\NetMQ-Grouped.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include=".files\NetMQ.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

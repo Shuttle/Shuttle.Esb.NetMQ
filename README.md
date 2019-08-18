@@ -1,59 +1,43 @@
 # Shuttle.Esb.NetMQ
 
-NetMQ implementation for use with Shuttle.Esb.
+NetMQ implementation for use with Shuttle.Esb.  Since NetMQ/ZeroMQ does not provide a queue as such this mechanism is used to *front* other queues or to make use of in-memory queues.
 
 ## NetMQQueue
 
-NetMQ does not provide 2-phase commit out-of-the-box.  Although implementing it is not too much effort the 2PC adds tremendous overhead (as it does for anything).  For this reason shuttle does not use 2PC with NetMQ.
-
-Instead we rely on the [idempotence service]({{ site.baseurl }}/idempotence-service/index.html).
-
-Since NetMQ talks directly to a queue on any server it is suggested that you use an outbox that specifies a local queue just in case the remote queue is not immediately available.
-
-### Installation
-
-If you need to install NetMQ you can <a target='_blank' href='https://www.rabbitmq.com/install-windows.html'>follow these instructions</a>.
-
-### Configuration
-
 The queue configuration is part of the specified uri, e.g.:
 
-~~~ xml
+``` xml
     <inbox
-      workQueueUri="rabbitmq://username:password@host:port/virtualhost/queue?prefetchCount=25&amp;durable=true&amp;persistent=true"
+      workQueueUri="netmq://host-ip:port/queue-name"
 	  .
 	  .
 	  .
     />
-~~~
+```
 
 | Segment / Argument | Default	| Description | Version Introduced |
 | --- | --- | --- | --- |
-| username:password	 | empty|	| |
-| virtualhost		 | /	|	| |
-| port				 | default	|	| |
-| prefetchcount			 | 25		| Specifies the number of messages to prefetch from the queue. | |
-| durable			 | true     | Determines whether the queue is durable.  Note: be very mindful of the possible consequences before setting to 'false'. | v3.5.0 |
-| persistent			 | true     | Determines whether messages will be persisted.  Note: be very mindful of the possible consequences before setting to 'false'. | v3.5.3 |
-| priority			 | empty     | Determines the number of priorities supported by the queue. | v10.0.10 |
+| host-ip		 | none	| The IP address of the Shuttle.Esb.NetMQ.Server that will process all requests. | |
+| port				 | none	| The port on which the Shuttle.Esb.NetMQ.Server will be listening for connections. | |
+| queue-name | none | The queue name that needs to be accessed. | |
 
-In addition to this there is also a NetMQ specific section (defaults specified here):
+## Shuttle.Esb.NetMQ.Server
 
-~~~ xml
+The server is required to listen to any requests from clients.  Since the server acts as a *go-between* for an actual queue you would need to specify the `uri` of the actual queue represented by a `name` using the application configuration file:
+
+``` xml
+<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <configSections>
-    <section name='rabbitmq' type="Shuttle.Esb.NetMQ.NetMQSection, Shuttle.Esb.NetMQ"/>
+    <section name="netmq" type="Shuttle.Esb.NetMQ.Server.NetMQSection, Shuttle.Esb.NetMQ.Server"/>
   </configSections>
-  
-  <rabbitmq
-	localQueueTimeoutMilliseconds="250"
-	remoteQueueTimeoutMilliseconds="2000"
-	connectionCloseTimeoutMilliseconds="1000"
-	requestedHeartbeat="30"
-	operationRetryCount="3"
-  />
-  .
-  .
-  .
-<configuration>
-~~~
+
+  <netmq port="6565">
+    <queues>
+      <add name="queue-one" uri="rabbitmq://user:password@localhost/actual-queue-one" />
+      <add name="queue-two" uri="msmq://./actual-queue-two" />
+      <add name="queue-three" uri="memory://actual-queue-three" />
+    </queues>
+  </netmq>
+</configuration>
+```

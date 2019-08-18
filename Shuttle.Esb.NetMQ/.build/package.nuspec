@@ -13,7 +13,7 @@
 		<description>NetMQ implementation for use with Shuttle.Esb.</description>
 		<releaseNotes/>
     <copyright>Copyright (c) {year}, Eben Roux</copyright>
-		<tags>shuttle netmq</tags>
+		<tags>shuttle netmq zeromq zmq</tags>
     <dependencies>
       <group>
         <dependency id="NetMQ" version="{NetMQ-version}" />

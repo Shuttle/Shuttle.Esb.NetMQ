@@ -13,6 +13,7 @@ namespace Shuttle.Esb.NetMQ
     public class NetMQRequestClient : INetMQRequestClient, IDisposable
     {
         private readonly Type _transportFrameType = typeof(TransportFrame);
+        private readonly Type _responseType = typeof(Response);
 
         private readonly TimeSpan _timeout;
         private readonly RequestSocket _requestSocket;
@@ -36,14 +37,15 @@ namespace Shuttle.Esb.NetMQ
             Guard.AgainstNullOrEmptyString(queueName, nameof(queueName));
 
             TransportFrame frame;
+            var responseTypeName = typeof(TResponse).FullName;
 
             using (var stream = _serializer.Serialize(request))
             {
                 frame = new TransportFrame
                 {
                     QueueName = queueName,
-                    TypeName = request.GetType().FullName,
-                    Data = stream.ToBytes()
+                    MessageType = request.GetType().FullName,
+                    Message = stream.ToBytes()
                 };
             }
 
@@ -52,7 +54,7 @@ namespace Shuttle.Esb.NetMQ
                 if (!_requestSocket.TrySendFrame(_timeout, stream.ToBytes()) ||
                     !_requestSocket.TryReceiveFrameBytes(_timeout, out var bytes))
                 {
-                    throw NetMQException.For(typeof(TResponse).FullName, frame.TypeName, Resources.CommunicationException);
+                    throw NetMQException.For(responseTypeName, frame.MessageType, Resources.CommunicationException);
                 }
 
                 using (var ms = new MemoryStream(bytes))
@@ -60,9 +62,15 @@ namespace Shuttle.Esb.NetMQ
                     frame = (TransportFrame)_serializer.Deserialize(_transportFrameType, ms);
                 }
 
-                using (var ms = new MemoryStream(frame.Data))
+                using (var ms = new MemoryStream(frame.Message))
                 {
-                    return (TResponse) _serializer.Deserialize(typeof(TResponse), ms);
+                    if (frame.MessageType.Equals(responseTypeName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return (TResponse) _serializer.Deserialize(typeof(TResponse), ms);
+                    }
+
+                    throw new NetMQException(string.Format(Resources.ServerException,
+                        ((Response) _serializer.Deserialize(_responseType, ms)).Exception);
                 }
             }
         }

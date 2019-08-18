@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Shuttle.Core.Contract;
+using Shuttle.Core.Streams;
 
 namespace Shuttle.Esb.NetMQ.Server
 {
@@ -45,7 +46,7 @@ namespace Shuttle.Esb.NetMQ.Server
 
             lock (_lock)
             {
-                _queue.Enqueue(new QueueMessage(stream));
+                _queue.Enqueue(new QueueMessage(stream.Copy()));
             }
         }
 

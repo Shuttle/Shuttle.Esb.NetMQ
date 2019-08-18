@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace Shuttle.Esb.NetMQ.Server.Configuration
+namespace Shuttle.Esb.NetMQ.Server
 {
     public class QueueElementCollection : ConfigurationElementCollection
     {

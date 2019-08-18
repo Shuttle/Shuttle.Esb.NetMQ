@@ -120,9 +120,17 @@
   <data name="CommunicationException" xml:space="preserve">
     <value>(communication exception)</value>
   </data>
+  <data name="DeserializerTransportMessageException" xml:space="preserve">
+    <value>Could not deserialize the transport frame.  Exception reported: {0}</value>
+    <comment>0 = exception</comment>
+  </data>
   <data name="GetResponseException" xml:space="preserve">
     <value>Could not obtain response type '{0}' for request type '{1}': {2}</value>
     <comment>0 = response type full name, 1 = request type full name, 2 = exception</comment>
+  </data>
+  <data name="ServerException" xml:space="preserve">
+    <value>Server exception: {0}</value>
+    <comment>0 = exception returned from server</comment>
   </data>
   <data name="UnknownException" xml:space="preserve">
     <value>(unknown exception)</value>

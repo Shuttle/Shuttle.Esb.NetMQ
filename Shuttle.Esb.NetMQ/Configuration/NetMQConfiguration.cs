@@ -2,7 +2,7 @@
 using System.Linq;
 using Shuttle.Core.Contract;
 
-namespace Shuttle.Esb.NetMQ.Server.Configuration
+namespace Shuttle.Esb.NetMQ.Server
 {
     public class NetMQConfiguration : INetMQConfiguration
     {
@@ -14,6 +14,8 @@ namespace Shuttle.Esb.NetMQ.Server.Configuration
 
             _queues.Add(queueConfiguration.Name, queueConfiguration);
         }
+
+        public int Port { get; set; }
 
         public IEnumerable<QueueConfiguration> Queues => _queues.Values.Select(item => item).ToList();
 

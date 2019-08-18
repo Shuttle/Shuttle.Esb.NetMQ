@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace Shuttle.Esb.NetMQ.Server.Configuration
+namespace Shuttle.Esb.NetMQ.Server
 {
     public interface INetMQConfiguration
     {
+        int Port { get; }
         IEnumerable<QueueConfiguration> Queues { get; }
         QueueConfiguration FindQueue(string name);
     }

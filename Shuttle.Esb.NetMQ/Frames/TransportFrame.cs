@@ -1,9 +1,13 @@
-﻿namespace Shuttle.Esb.NetMQ.Frames
+﻿using System;
+
+namespace Shuttle.Esb.NetMQ.Frames
 {
     public class TransportFrame
     {
+        public Guid MessageId { get; set; } = Guid.NewGuid();
         public string QueueName { get; set; }
-        public string TypeName { get; set; }
-        public byte[] Data { get; set; }
+        public string MessageType { get; set; }
+        public byte[] Message { get; set; }
+        public string AssemblyQualifiedName { get; set; }
     }
 }

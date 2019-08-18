@@ -70,11 +70,29 @@ namespace Shuttle.Esb.NetMQ {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not deserialize the transport frame.  Exception reported: {0}.
+        /// </summary>
+        public static string DeserializerTransportMessageException {
+            get {
+                return ResourceManager.GetString("DeserializerTransportMessageException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not obtain response type &apos;{0}&apos; for request type &apos;{1}&apos;: {2}.
         /// </summary>
         public static string GetResponseException {
             get {
                 return ResourceManager.GetString("GetResponseException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server exception: {0}.
+        /// </summary>
+        public static string ServerException {
+            get {
+                return ResourceManager.GetString("ServerException", resourceCulture);
             }
         }
         
