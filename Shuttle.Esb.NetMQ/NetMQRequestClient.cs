@@ -70,7 +70,7 @@ namespace Shuttle.Esb.NetMQ
                     }
 
                     throw new NetMQException(string.Format(Resources.ServerException,
-                        ((Response) _serializer.Deserialize(_responseType, ms)).Exception);
+                        ((Response) _serializer.Deserialize(_responseType, ms)).Exception));
                 }
             }
         }

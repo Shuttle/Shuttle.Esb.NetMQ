@@ -8,7 +8,11 @@ using Shuttle.Esb.NetMQ.Frames;
 
 namespace Shuttle.Esb.NetMQ
 {
-    public class SerializeTransportFrameObserver : IPipelineObserver<OnSerializeTransportFrame>
+    public interface ISerializeTransportFrameObserver : IPipelineObserver<OnSerializeTransportFrame>
+    {
+    }
+
+    public class SerializeTransportFrameObserver : ISerializeTransportFrameObserver
     {
         private readonly ILog _log;
         private readonly ISerializer _serializer;

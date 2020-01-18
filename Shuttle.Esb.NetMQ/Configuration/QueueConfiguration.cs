@@ -5,16 +5,16 @@ namespace Shuttle.Esb.NetMQ.Server
 {
     public class QueueConfiguration
     {
-        public QueueConfiguration(string name, Uri uri)
+        public QueueConfiguration(string name, string uri)
         {
             Guard.AgainstNullOrEmptyString(name, nameof(name));
-            Guard.AgainstNull(uri, nameof(uri));
+            Guard.AgainstNullOrEmptyString(uri, nameof(uri));
 
             Name = name;
             Uri = uri;
         }
 
         public string Name { get; }
-        public Uri Uri { get; }
+        public string Uri { get; }
     }
 }

@@ -135,4 +135,12 @@
   <data name="UnknownException" xml:space="preserve">
     <value>(unknown exception)</value>
   </data>
+  <data name="UnknownQueueNameException" xml:space="preserve">
+    <value>Could not find a queue with name '{0}'.</value>
+    <comment>0 = requested queue name</comment>
+  </data>
+  <data name="UnknownRequestType" xml:space="preserve">
+    <value>Unknown request type '{0}'.</value>
+    <comment>0 = full type name of the request message</comment>
+  </data>
 </root>

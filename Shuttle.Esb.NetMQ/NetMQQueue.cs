@@ -44,7 +44,7 @@ namespace Shuttle.Esb.NetMQ
             var response = NetMQException.GuardAgainstException<GetMessageResponse, GetMessageRequest>(
                 _requestClient.GetResponse<GetMessageResponse>(new GetMessageRequest(), _uriParser.QueueName));
 
-            return new ReceivedMessage(new MemoryStream(response.StreamBytes), response.AcknowledgementToken);
+            return response.AcknowledgementToken != null ? new ReceivedMessage(new MemoryStream(response.StreamBytes), response.AcknowledgementToken) : null;
         }
 
         public void Acknowledge(object acknowledgementToken)

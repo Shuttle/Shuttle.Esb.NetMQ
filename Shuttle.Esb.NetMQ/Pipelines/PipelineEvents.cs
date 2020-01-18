@@ -2,6 +2,10 @@
 
 namespace Shuttle.Esb.NetMQ
 {
+    public class OnGetFrame : PipelineEvent
+    {
+    }
+
     public class OnDeserializeMessage : PipelineEvent
     {
     }
@@ -15,6 +19,10 @@ namespace Shuttle.Esb.NetMQ
     }
 
     public class OnSerializeTransportFrame : PipelineEvent
+    {
+    }
+
+    public class OnHandleRequest : PipelineEvent
     {
     }
 }

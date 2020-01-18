@@ -6,6 +6,6 @@ namespace Shuttle.Esb.NetMQ.Server
     {
         int Port { get; }
         IEnumerable<QueueConfiguration> Queues { get; }
-        QueueConfiguration FindQueue(string name);
+        QueueConfiguration GetQueue(string name);
     }
 }

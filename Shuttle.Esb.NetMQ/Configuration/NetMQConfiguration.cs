@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Shuttle.Core.Contract;
 
@@ -19,11 +20,14 @@ namespace Shuttle.Esb.NetMQ.Server
 
         public IEnumerable<QueueConfiguration> Queues => _queues.Values.Select(item => item).ToList();
 
-        public QueueConfiguration FindQueue(string name)
+        public QueueConfiguration GetQueue(string name)
         {
             Guard.AgainstNull(name, nameof(name));
 
-            _queues.TryGetValue(name, out var result);
+            if (!_queues.TryGetValue(name, out var result))
+            {
+                throw new ApplicationException(string.Format(Resources.UnknownQueueNameException, name));
+            }
 
             return result;
         }

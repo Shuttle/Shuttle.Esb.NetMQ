@@ -22,19 +22,7 @@ namespace Shuttle.Esb.NetMQ.Server
 
             foreach (QueueElement queueElement in section.Queues)
             {
-                Uri uri;
-
-                try
-                {
-                    uri = new Uri(queueElement.Uri);
-                }
-                catch (Exception ex)
-                {
-                    throw new NetMQException(string.Format(Resources.InvalidQueueUriExcepttion, queueElement.Name,
-                        queueElement.Uri));
-                }
-
-                result.AddQueue(new QueueConfiguration(queueElement.Name, uri));
+                result.AddQueue(new QueueConfiguration(queueElement.Name, queueElement.Uri));
             }
 
             return result;

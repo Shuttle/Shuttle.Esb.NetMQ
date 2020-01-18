@@ -7,7 +7,11 @@ using Shuttle.Esb.NetMQ.Frames;
 
 namespace Shuttle.Esb.NetMQ
 {
-    public class DeserializeMessageObserver : IPipelineObserver<OnDeserializeMessage>
+    public interface IDeserializeMessageObserver : IPipelineObserver<OnDeserializeMessage>
+    {
+    }
+
+    public class DeserializeMessageObserver : IDeserializeMessageObserver
     {
         private readonly ISerializer _serializer;
 

@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using NetMQ;
 using NetMQ.Sockets;
 using Shuttle.Core.Contract;
+using Shuttle.Core.Reflection;
 using Shuttle.Core.Serialization;
+using Shuttle.Core.Streams;
 using Shuttle.Esb.NetMQ.Frames;
 
 namespace Shuttle.Esb.NetMQ.Server
@@ -19,6 +23,7 @@ namespace Shuttle.Esb.NetMQ.Server
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly Task _task;
         private readonly Type _transportFrameType = typeof(TransportFrame);
+        private readonly ConcurrentQueue<Stream> _streams = new ConcurrentQueue<Stream>();
 
         public NetMQRequestServer(INetMQConfiguration configuration, IQueueManager queueManager,
             ISerializer serializer)
@@ -34,7 +39,7 @@ namespace Shuttle.Esb.NetMQ.Server
             _responseSocket = new ResponseSocket();
             _responseSocket.Bind($"tcp://localhost:{configuration.Port}");
 
-            _task = Task.Run(() => Listen());
+            _task = Task.Run(Listen);
         }
 
         private void Listen()
@@ -46,36 +51,24 @@ namespace Shuttle.Esb.NetMQ.Server
             {
                 if (_responseSocket.TryReceiveFrameBytes(timeout, out var bytes))
                 {
-                    TransportFrame frame = null;
-
-                    try
-                    {
-                        object message;
-
-                        using (var ms = new MemoryStream(bytes))
-                        {
-                            frame = (TransportFrame)_serializer.Deserialize(_transportFrameType, ms);
-                        }
-
-                        using (var ms = new MemoryStream(frame.Message))
-                        {
-                            message = _serializer.Deserialize(Type.GetType(frame.MessageType), ms);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        if (frame)
-                    }
+                    _streams.Enqueue(new MemoryStream(bytes));
                 }
             }
         }
         
         public void Dispose()
         {
-            _cancellationTokenSource.Cancel();
-
+            _cancellationTokenSource?.Cancel();
+            _task?.Dispose();
             _responseSocket?.Dispose();
             _cancellationTokenSource?.Dispose();
+        }
+
+        public Stream GetFrameStream()
+        {
+            _streams.TryDequeue(out var result);
+
+            return result;
         }
     }
 }
