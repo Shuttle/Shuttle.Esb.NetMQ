@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,7 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="NetMQ" Version="4.0.0.207" />
-    <PackageReference Include="Shuttle.Core.Log4Net" Version="10.0.2" />
+    <PackageReference Include="Shuttle.Core.Container" Version="11.1.0" />
+    <PackageReference Include="Shuttle.Core.Log4Net" Version="10.0.3" />
     <PackageReference Include="Shuttle.Core.Ninject" Version="10.0.5" />
     <PackageReference Include="Shuttle.Core.ServiceHost" Version="10.0.4" />
     <PackageReference Include="Shuttle.Esb" Version="11.0.1" />
