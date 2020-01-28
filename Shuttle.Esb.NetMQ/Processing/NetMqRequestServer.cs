@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using NetMQ;
 using NetMQ.Sockets;
 using Shuttle.Core.Contract;
-using Shuttle.Core.Reflection;
 using Shuttle.Core.Serialization;
-using Shuttle.Core.Streams;
-using Shuttle.Esb.NetMQ.Frames;
 
-namespace Shuttle.Esb.NetMQ.Server
+namespace Shuttle.Esb.NetMQ
 {
     public class NetMQRequestServer : INetMQRequestServer, IDisposable
     {

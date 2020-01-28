@@ -6,6 +6,7 @@ using Shuttle.Core.Container;
 using Shuttle.Core.Log4Net;
 using Shuttle.Core.Logging;
 using Shuttle.Core.Ninject;
+using Shuttle.Core.Serialization;
 using Shuttle.Core.ServiceHost;
 using ILog = Shuttle.Core.Logging.ILog;
 
@@ -48,6 +49,8 @@ namespace Shuttle.Esb.NetMQ.Server
             var configuration = NetMQSection.GetConfiguration();
 
             container.RegisterInstance(configuration);
+            container.Register(typeof(ISerializer), configuration.GetSerializerType());
+            container.Register<INetMQRequestClientProvider, NetMQRequestClientProvider>();
             container.Register<INetMQRequestServer, NetMQRequestServer>();
 
             ServiceBus.Register(container);

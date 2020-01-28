@@ -3,7 +3,6 @@ using System.IO;
 using Shuttle.Core.Contract;
 using Shuttle.Core.Pipelines;
 using Shuttle.Core.Serialization;
-using Shuttle.Esb.NetMQ.Frames;
 
 namespace Shuttle.Esb.NetMQ
 {

@@ -1,6 +1,5 @@
 ﻿using Shuttle.Core.Contract;
 using Shuttle.Core.Pipelines;
-using Shuttle.Esb.NetMQ.Server;
 
 namespace Shuttle.Esb.NetMQ
 {

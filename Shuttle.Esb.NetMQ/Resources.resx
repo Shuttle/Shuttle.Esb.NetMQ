@@ -143,4 +143,8 @@
     <value>Unknown request type '{0}'.</value>
     <comment>0 = full type name of the request message</comment>
   </data>
+  <data name="UnknownSerializerType" xml:space="preserve">
+    <value>Unknown serializer type '{0}'.</value>
+    <comment>0 = required serializer full type name</comment>
+  </data>
 </root>

@@ -122,5 +122,14 @@ namespace Shuttle.Esb.NetMQ {
                 return ResourceManager.GetString("UnknownRequestType", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown serializer type &apos;{0}&apos;..
+        /// </summary>
+        public static string UnknownSerializerType {
+            get {
+                return ResourceManager.GetString("UnknownSerializerType", resourceCulture);
+            }
+        }
     }
 }

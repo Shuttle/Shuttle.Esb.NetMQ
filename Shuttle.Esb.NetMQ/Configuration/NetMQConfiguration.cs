@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Shuttle.Core.Contract;
 
-namespace Shuttle.Esb.NetMQ.Server
+namespace Shuttle.Esb.NetMQ
 {
     public class NetMQConfiguration : INetMQConfiguration
     {
@@ -17,6 +17,7 @@ namespace Shuttle.Esb.NetMQ.Server
         }
 
         public int Port { get; set; }
+        public string SerializerType { get; set;  }
 
         public IEnumerable<QueueConfiguration> Queues => _queues.Values.Select(item => item).ToList();
 

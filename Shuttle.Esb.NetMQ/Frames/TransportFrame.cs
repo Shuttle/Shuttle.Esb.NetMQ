@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shuttle.Esb.NetMQ.Frames
+namespace Shuttle.Esb.NetMQ
 {
     public class TransportFrame
     {

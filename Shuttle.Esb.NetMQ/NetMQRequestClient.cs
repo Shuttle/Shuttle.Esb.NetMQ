@@ -6,7 +6,6 @@ using NetMQ.Sockets;
 using Shuttle.Core.Contract;
 using Shuttle.Core.Serialization;
 using Shuttle.Core.Streams;
-using Shuttle.Esb.NetMQ.Frames;
 
 namespace Shuttle.Esb.NetMQ
 {

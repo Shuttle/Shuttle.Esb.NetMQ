@@ -61,11 +61,29 @@ namespace Shuttle.Esb.NetMQ.Server {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not find a configuration section named &apos;netmq&apos; either as a root item or within the &apos;shuttle&apos; group (if it is being used)..
+        /// </summary>
+        internal static string ConfigurationSectionMissing {
+            get {
+                return ResourceManager.GetString("ConfigurationSectionMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Queue with name &apos;{0}&apos; has an invalid Uri of &apos;{1}&apos;..
         /// </summary>
         internal static string InvalidQueueUriException {
             get {
                 return ResourceManager.GetString("InvalidQueueUriException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No queues have been configured..
+        /// </summary>
+        internal static string QueuesEmpty {
+            get {
+                return ResourceManager.GetString("QueuesEmpty", resourceCulture);
             }
         }
     }

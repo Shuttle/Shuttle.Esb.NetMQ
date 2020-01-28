@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Shuttle.Esb.NetMQ.Server
+namespace Shuttle.Esb.NetMQ
 {
     public interface INetMQRequestServer
     {
