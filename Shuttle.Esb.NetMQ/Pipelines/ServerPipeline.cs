@@ -10,6 +10,7 @@ namespace Shuttle.Esb.NetMQ
             IDeserializeMessageObserver deserializeMessageObserver, IHandleRequestObserver handleRequestObserver,
             ISerializeMessageObserver serializeMessageObserver,
             ISerializeTransportFrameObserver serializeTransportFrameObserver,
+            ISendFrameObserver sendFrameObserver,
             IReceiveExceptionObserver exceptionObserver)
         {
             Guard.AgainstNull(getFrameObserver, nameof(getFrameObserver));
@@ -22,11 +23,12 @@ namespace Shuttle.Esb.NetMQ
 
             RegisterStage("Receive")
                 .WithEvent<OnGetFrame>()
-                .WithEvent<OnDeserializeTransportMessage>()
+                .WithEvent<OnDeserializeTransportFrame>()
                 .WithEvent<OnDeserializeMessage>()
                 .WithEvent<OnHandleRequest>()
                 .WithEvent<OnSerializeMessage>()
-                .WithEvent<OnSerializeTransportFrame>();
+                .WithEvent<OnSerializeTransportFrame>()
+                .WithEvent<OnSendFrame>();
 
             RegisterObserver(getFrameObserver);
             RegisterObserver(deserializeTransportFrameObserver);
@@ -34,6 +36,7 @@ namespace Shuttle.Esb.NetMQ
             RegisterObserver(handleRequestObserver);
             RegisterObserver(serializeMessageObserver);
             RegisterObserver(serializeTransportFrameObserver);
+            RegisterObserver(sendFrameObserver);
 
             RegisterObserver(exceptionObserver);
         }

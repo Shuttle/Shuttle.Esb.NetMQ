@@ -8,6 +8,7 @@ namespace Shuttle.Esb.NetMQ
     public class NetMQConfiguration : INetMQConfiguration
     {
         private readonly Dictionary<string, QueueConfiguration> _queues = new Dictionary<string, QueueConfiguration>();
+        private readonly List<Type> _queueFactoryTypes = new List<Type>();
 
         public void AddQueue(QueueConfiguration queueConfiguration)
         {
@@ -20,6 +21,9 @@ namespace Shuttle.Esb.NetMQ
         public string SerializerType { get; set;  }
 
         public IEnumerable<QueueConfiguration> Queues => _queues.Values.Select(item => item).ToList();
+        public IEnumerable<Type> QueueFactoryTypes => _queueFactoryTypes.AsReadOnly();
+        public bool ScanForQueueFactories { get; set; }
+        public TimeSpan RequestTimeout { get; set; }
 
         public QueueConfiguration GetQueue(string name)
         {
@@ -31,6 +35,13 @@ namespace Shuttle.Esb.NetMQ
             }
 
             return result;
+        }
+
+        public void AddQueueFactoryType(Type type)
+        {
+            Guard.AgainstNull(type, nameof(type));
+
+            _queueFactoryTypes.Add(type);
         }
     }
 }

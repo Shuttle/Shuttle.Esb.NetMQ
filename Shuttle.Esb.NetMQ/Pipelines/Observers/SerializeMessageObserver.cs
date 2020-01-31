@@ -5,7 +5,7 @@ using Shuttle.Core.Streams;
 
 namespace Shuttle.Esb.NetMQ
 {
-    public interface ISerializeMessageObserver : IPipelineObserver<OnDeserializeMessage>
+    public interface ISerializeMessageObserver : IPipelineObserver<OnSerializeMessage>
     {
     }
 
@@ -20,7 +20,7 @@ namespace Shuttle.Esb.NetMQ
             _serializer = serializer;
         }
 
-        public void Execute(OnDeserializeMessage pipelineEvent)
+        public void Execute(OnSerializeMessage pipelineEvent)
         {
             Guard.AgainstNull(pipelineEvent, nameof(pipelineEvent));
 

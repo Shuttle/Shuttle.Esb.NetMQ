@@ -6,12 +6,15 @@ namespace Shuttle.Esb.NetMQ
     public class NetMQQueueFactory : IQueueFactory
     {
         private readonly INetMQRequestClientProvider _requestClientProvider;
+        private readonly INetMQConfiguration _configuration;
 
-        public NetMQQueueFactory(INetMQRequestClientProvider requestClientProvider)
+        public NetMQQueueFactory(INetMQRequestClientProvider requestClientProvider, INetMQConfiguration configuration)
         {
             Guard.AgainstNull(requestClientProvider, nameof(requestClientProvider));
+            Guard.AgainstNull(configuration, nameof(configuration));
 
             _requestClientProvider = requestClientProvider;
+            _configuration = configuration;
         }
 
         public string Scheme => NetMQUriParser.Scheme;
@@ -22,7 +25,7 @@ namespace Shuttle.Esb.NetMQ
 
             var parser = new NetMQUriParser(uri);
 
-            return new NetMQQueue(parser, _requestClientProvider.Get(parser.GetIPEndPoint()));
+            return new NetMQQueue(parser, _requestClientProvider.Get(parser.GetIPEndPoint(), _configuration.RequestTimeout));
         }
 
         public bool CanCreate(Uri uri)

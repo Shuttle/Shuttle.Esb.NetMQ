@@ -6,32 +6,19 @@ using System.Threading.Tasks;
 using NetMQ;
 using NetMQ.Sockets;
 using Shuttle.Core.Contract;
-using Shuttle.Core.Serialization;
+using Shuttle.Core.Streams;
 
 namespace Shuttle.Esb.NetMQ
 {
     public class NetMQRequestServer : INetMQRequestServer, IDisposable
     {
-        private readonly INetMQConfiguration _configuration;
-        private readonly IQueueManager _queueManager;
-        private readonly ISerializer _serializer;
         private readonly ResponseSocket _responseSocket;
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         private readonly Task _task;
-        private readonly Type _transportFrameType = typeof(TransportFrame);
-        private readonly ConcurrentQueue<Stream> _streams = new ConcurrentQueue<Stream>();
+        private Stream _stream = null;
 
-        public NetMQRequestServer(INetMQConfiguration configuration, IQueueManager queueManager,
-            ISerializer serializer)
+        public NetMQRequestServer(INetMQConfiguration configuration)
         {
-            Guard.AgainstNull(configuration, nameof(configuration));
-            Guard.AgainstNull(queueManager, nameof(queueManager));
-            Guard.AgainstNull(serializer, nameof(serializer));
-
-            _configuration = configuration;
-            _queueManager = queueManager;
-            _serializer = serializer;
-
             _responseSocket = new ResponseSocket();
             _responseSocket.Bind($"tcp://localhost:{configuration.Port}");
 
@@ -45,9 +32,14 @@ namespace Shuttle.Esb.NetMQ
 
             while (!cancellationToken.IsCancellationRequested)
             {
+                if (_stream != null)
+                {
+                    continue;
+                }
+
                 if (_responseSocket.TryReceiveFrameBytes(timeout, out var bytes))
                 {
-                    _streams.Enqueue(new MemoryStream(bytes));
+                    _stream = new MemoryStream(bytes);
                 }
             }
         }
@@ -55,6 +47,7 @@ namespace Shuttle.Esb.NetMQ
         public void Dispose()
         {
             _cancellationTokenSource?.Cancel();
+            _task?.Wait();
             _task?.Dispose();
             _responseSocket?.Dispose();
             _cancellationTokenSource?.Dispose();
@@ -62,9 +55,17 @@ namespace Shuttle.Esb.NetMQ
 
         public Stream GetFrameStream()
         {
-            _streams.TryDequeue(out var result);
+            return _stream;
+        }
 
-            return result;
+        public void SendFrameStream(Stream stream)
+        {
+            Guard.AgainstNull(stream, nameof(stream));
+
+            _responseSocket.SendFrame(stream.ToBytes());
+
+            _stream.Dispose();
+            _stream = null;
         }
     }
 }

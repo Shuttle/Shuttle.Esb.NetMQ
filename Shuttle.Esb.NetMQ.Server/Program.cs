@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using log4net;
 using Ninject;
@@ -6,6 +7,7 @@ using Shuttle.Core.Container;
 using Shuttle.Core.Log4Net;
 using Shuttle.Core.Logging;
 using Shuttle.Core.Ninject;
+using Shuttle.Core.Reflection;
 using Shuttle.Core.Serialization;
 using Shuttle.Core.ServiceHost;
 using ILog = Shuttle.Core.Logging.ILog;
@@ -23,8 +25,8 @@ namespace Shuttle.Esb.NetMQ.Server
     internal class Host : IServiceHost
     {
         private readonly ILog _log;
-        private IServiceBus _bus;
         private IKernel _kernel;
+        private INetMQRequestServer _server;
 
         public Host()
         {
@@ -45,24 +47,47 @@ namespace Shuttle.Esb.NetMQ.Server
 
             _kernel = new StandardKernel();
 
-            var container = new NinjectComponentContainer(_kernel);
             var configuration = NetMQSection.GetConfiguration();
+            var container = ContainerFactory.Create(_kernel, configuration);
 
-            container.RegisterInstance(configuration);
-            container.Register(typeof(ISerializer), configuration.GetSerializerType());
-            container.Register<INetMQRequestClientProvider, NetMQRequestClientProvider>();
-            container.Register<INetMQRequestServer, NetMQRequestServer>();
+            var queueFactoryType = typeof(IQueueFactory);
+            var queueFactoryImplementationTypes = new HashSet<Type>();
 
-            ServiceBus.Register(container);
+            void AddQueueFactoryImplementationType(Type type)
+            {
+                queueFactoryImplementationTypes.Add(type);
+            }
 
-            _bus = ServiceBus.Create(container).Start();
+            if (configuration.ScanForQueueFactories)
+            {
+                foreach (var type in new ReflectionService().GetTypesAssignableTo<IQueueFactory>())
+                {
+                    AddQueueFactoryImplementationType(type);
+                }
+            }
+
+            foreach (var type in configuration.QueueFactoryTypes)
+            {
+                AddQueueFactoryImplementationType(type);
+            }
+
+            container.RegisterCollection(queueFactoryType, queueFactoryImplementationTypes, Lifestyle.Singleton);
+
+            var queueManager = container.Resolve<IQueueManager>();
+
+            foreach (var queueFactory in container.ResolveAll<IQueueFactory>())
+            {
+                queueManager.RegisterQueueFactory(queueFactory);
+            }
+
+            _server = container.Resolve<INetMQRequestServer>();
 
             _log.Information("[started]");
         }
 
         public void Stop()
         {
-            _bus?.Dispose();
+            _server?.AttemptDispose();
             _kernel?.Dispose();
         }
     }

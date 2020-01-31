@@ -40,10 +40,13 @@ namespace Shuttle.Esb.NetMQ
 
             using (var stream = _serializer.Serialize(request))
             {
+                var type = request.GetType();
+
                 frame = new TransportFrame
                 {
                     QueueName = queueName,
-                    MessageType = request.GetType().FullName,
+                    AssemblyQualifiedName = type.AssemblyQualifiedName,
+                    MessageType = type.FullName,
                     Message = stream.ToBytes()
                 };
             }

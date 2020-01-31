@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Shuttle.Esb.NetMQ
 {
@@ -8,5 +9,8 @@ namespace Shuttle.Esb.NetMQ
         string SerializerType { get; }
         IEnumerable<QueueConfiguration> Queues { get; }
         QueueConfiguration GetQueue(string name);
+        IEnumerable<Type> QueueFactoryTypes { get; }
+        bool ScanForQueueFactories { get; }
+        TimeSpan RequestTimeout { get; }
     }
 }

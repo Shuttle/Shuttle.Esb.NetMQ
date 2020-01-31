@@ -8,6 +8,8 @@ namespace Shuttle.Esb.NetMQ
 {
     public class NetMQRequestClientProvider : INetMQRequestClientProvider
     {
+        public static TimeSpan DefaultTimeout = TimeSpan.FromSeconds(1);
+
         private readonly ISerializer _serializer;
         private static readonly object Lock = new object();
 
@@ -20,7 +22,7 @@ namespace Shuttle.Esb.NetMQ
             _serializer = serializer;
         }
 
-        public INetMQRequestClient Get(IPEndPoint ipEndPoint)
+        public INetMQRequestClient Get(IPEndPoint ipEndPoint, TimeSpan timeout)
         {
             Guard.AgainstNull(ipEndPoint, nameof(ipEndPoint));
 
@@ -30,7 +32,7 @@ namespace Shuttle.Esb.NetMQ
 
                 if (!_clients.ContainsKey(key))
                 {
-                    _clients.Add(key, new NetMQRequestClient(_serializer, ipEndPoint, TimeSpan.FromSeconds(1)));
+                    _clients.Add(key, new NetMQRequestClient(_serializer, ipEndPoint, timeout));
                 }
 
                 return _clients[key];
