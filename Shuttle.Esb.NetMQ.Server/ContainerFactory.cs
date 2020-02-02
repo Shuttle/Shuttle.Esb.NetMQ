@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Ninject;
 using Shuttle.Core.Container;
 using Shuttle.Core.Contract;
@@ -57,6 +58,37 @@ namespace Shuttle.Esb.NetMQ.Server
 
                     container.Register(interfaceType, type, Lifestyle.Singleton);
                 }
+            }
+
+            var queueFactoryType = typeof(IQueueFactory);
+            var queueFactoryImplementationTypes = new HashSet<Type>();
+
+            void AddQueueFactoryImplementationType(Type type)
+            {
+                queueFactoryImplementationTypes.Add(type);
+            }
+
+            if (configuration.ScanForQueueFactories)
+            {
+                foreach (var type in new ReflectionService().GetTypesAssignableTo<IQueueFactory>())
+                {
+                    AddQueueFactoryImplementationType(type);
+                }
+            }
+
+            foreach (var type in configuration.QueueFactoryTypes)
+            {
+                AddQueueFactoryImplementationType(type);
+            }
+
+            container.RegisterCollection(queueFactoryType, queueFactoryImplementationTypes, Lifestyle.Singleton);
+
+            var queueManager = container.Resolve<IQueueManager>();
+            var queueFactories = container.ResolveAll<IQueueFactory>();
+
+            foreach (var queueFactory in queueFactories)
+            {
+                queueManager.RegisterQueueFactory(queueFactory);
             }
 
             return container;

@@ -25,8 +25,8 @@ namespace Shuttle.Esb.NetMQ
             Guard.AgainstNull(pipelineEvent, nameof(pipelineEvent));
 
             var state = pipelineEvent.Pipeline.State;
-            var message = state.GetMessage();
-            var transportFrame = state.Get<TransportFrame>();
+            var message = state.Get<object>(StateKeys.Response);
+            var transportFrame = state.Get<TransportFrame>(StateKeys.TransportFrame);
 
             Guard.AgainstNull(message, nameof(message));
             Guard.AgainstNull(transportFrame, nameof(transportFrame));
@@ -34,7 +34,6 @@ namespace Shuttle.Esb.NetMQ
             using (var stream = _serializer.Serialize(message))
             {
                 transportFrame.Message = stream.ToBytes();
-                state.SetMessageBytes(transportFrame.Message);
             }
         }
     }

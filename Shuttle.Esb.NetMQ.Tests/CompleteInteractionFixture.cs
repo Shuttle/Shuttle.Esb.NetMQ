@@ -22,6 +22,9 @@ public class CompleteInteractionFixture
                 Port = port
             };
 
+            configuration.AddQueueFactoryType(typeof(MemoryQueueFactory));
+            configuration.AddQueue(new QueueConfiguration("memory-queue", "memory://memory-queue"));
+
             var container = ContainerFactory.Create(new StandardKernel(), configuration);
 
             ((DefaultPipelineFactory) container.Resolve<IPipelineFactory>()).Assign(container);

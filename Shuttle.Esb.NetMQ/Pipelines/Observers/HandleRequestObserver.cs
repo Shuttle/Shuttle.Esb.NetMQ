@@ -29,9 +29,9 @@ namespace Shuttle.Esb.NetMQ
             Guard.AgainstNull(pipelineEvent, nameof(pipelineEvent));
 
             var state = pipelineEvent.Pipeline.State;
-            var transportFrame = state.Get<TransportFrame>();
+            var transportFrame = state.Get<TransportFrame>(StateKeys.TransportFrame);
             var message = state.Get<object>(StateKeys.Message);
-            Response response = null;
+            Response response;
 
             var queue = _queueManager.GetQueue(_configuration.GetQueue(transportFrame.QueueName).Uri);
 
@@ -88,7 +88,15 @@ namespace Shuttle.Esb.NetMQ
                 }
             }
 
+            var type = response.GetType();
+
             state.Replace(StateKeys.Response, response);
+            state.Replace(StateKeys.TransportFrame, new TransportFrame
+            {
+                QueueName = transportFrame.QueueName,
+                AssemblyQualifiedName = type.AssemblyQualifiedName,
+                MessageType = type.FullName
+            });
         }
     }
 }
