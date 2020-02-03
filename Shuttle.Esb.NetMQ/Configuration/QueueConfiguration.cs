@@ -1,4 +1,5 @@
-﻿using Shuttle.Core.Contract;
+﻿using System;
+using Shuttle.Core.Contract;
 
 namespace Shuttle.Esb.NetMQ
 {
@@ -10,7 +11,7 @@ namespace Shuttle.Esb.NetMQ
             Guard.AgainstNullOrEmptyString(uri, nameof(uri));
 
             Name = name;
-            Uri = uri;
+            Uri = new Uri(uri).ToString();
         }
 
         public string Name { get; }
