@@ -10,14 +10,14 @@ namespace Shuttle.Esb.NetMQ.Server
     {
         private class QueueMessage
         {
-            public QueueMessage(Stream stream)
+            public QueueMessage(byte[] bytes)
             {
                 AcknowledgementToken = Guid.NewGuid();
-                Stream = stream;
+                Bytes = bytes;
             }
 
             public Guid AcknowledgementToken { get; }
-            public Stream Stream { get; }
+            public byte[] Bytes { get; }
         }
 
         private readonly object _lock = new object();
@@ -46,7 +46,7 @@ namespace Shuttle.Esb.NetMQ.Server
 
             lock (_lock)
             {
-                _queue.Enqueue(new QueueMessage(stream.Copy()));
+                _queue.Enqueue(new QueueMessage(stream.ToBytes()));
             }
         }
 
@@ -63,7 +63,7 @@ namespace Shuttle.Esb.NetMQ.Server
 
                 _journal.Add(message.AcknowledgementToken, message);
 
-                return new ReceivedMessage(message.Stream, message.AcknowledgementToken);
+                return new ReceivedMessage(new MemoryStream(message.Bytes), message.AcknowledgementToken);
             }
         }
 

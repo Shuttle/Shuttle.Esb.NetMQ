@@ -26,7 +26,8 @@ namespace Shuttle.Esb.NetMQ.Server
     {
         private readonly ILog _log;
         private IKernel _kernel;
-        private INetMQRequestServer _server;
+        private INetMQRequestServer _requestServer;
+        private INetMQServer _server;
 
         public Host()
         {
@@ -80,7 +81,9 @@ namespace Shuttle.Esb.NetMQ.Server
                 queueManager.RegisterQueueFactory(queueFactory);
             }
 
-            _server = container.Resolve<INetMQRequestServer>();
+            _requestServer = container.Resolve<INetMQRequestServer>();
+
+            _server = container.Resolve<INetMQServer>().Start();
 
             _log.Information("[started]");
         }
@@ -88,6 +91,7 @@ namespace Shuttle.Esb.NetMQ.Server
         public void Stop()
         {
             _server?.AttemptDispose();
+            _requestServer?.AttemptDispose();
             _kernel?.Dispose();
         }
     }

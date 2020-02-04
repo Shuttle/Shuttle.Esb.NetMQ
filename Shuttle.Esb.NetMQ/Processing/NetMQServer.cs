@@ -7,17 +7,14 @@ namespace Shuttle.Esb.NetMQ
 {
     public class NetMQServer : INetMQServer, IDisposable
     {
-        private readonly IPipelineFactory _pipelineFactory;
         private ProcessorThreadPool _threadPool;
 
         public NetMQServer(IPipelineFactory pipelineFactory)
         {
             Guard.AgainstNull(pipelineFactory, nameof(pipelineFactory));
 
-            _pipelineFactory = pipelineFactory;
-
             _threadPool =
-                new ProcessorThreadPool("ServerProcessor", 1, new ServerProcessorFactory(_pipelineFactory));
+                new ProcessorThreadPool("ServerProcessor", 1, new ServerProcessorFactory(pipelineFactory));
         }
 
         public void Dispose()
@@ -25,9 +22,11 @@ namespace Shuttle.Esb.NetMQ
             Stop();
         }
 
-        public void Start()
+        public INetMQServer Start()
         {
             _threadPool.Start();
+
+            return this;
         }
 
         public void Stop()

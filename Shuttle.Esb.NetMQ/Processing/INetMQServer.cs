@@ -2,7 +2,7 @@
 {
     public interface INetMQServer
     {
-        void Start();
+        INetMQServer Start();
         void Stop();
     }
 }

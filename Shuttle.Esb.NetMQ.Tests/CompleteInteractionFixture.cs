@@ -1,9 +1,13 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Net;
 using Ninject;
 using NUnit.Framework;
 using Shuttle.Core.Pipelines;
 using Shuttle.Core.Reflection;
+using Shuttle.Core.Serialization;
+using Shuttle.Core.Streams;
 using Shuttle.Esb.NetMQ.Server;
 
 namespace Shuttle.Esb.NetMQ.Tests
@@ -40,6 +44,8 @@ namespace Shuttle.Esb.NetMQ.Tests
             {
                 server.Start();
 
+                var serializer = container.Resolve<ISerializer>();
+
                 requestServer = container.Resolve<INetMQRequestServer>();
                 requestClient = container.Resolve<INetMQRequestClientProvider>()
                     .Get(ipEndpoint, TimeSpan.FromSeconds(30));
@@ -48,11 +54,17 @@ namespace Shuttle.Esb.NetMQ.Tests
 
                 Assert.That(isEmptyResponse.Result, Is.True);
 
+                var transportMessage = new TransportMessage
+                {
+                    MessageType = "test",
+                    Message = new byte[] { 1, 2, 3, 4 }
+                };
+
                 var response = requestClient.GetResponse<Response>(
                     new EnqueueRequest
                     {
-                        StreamBytes = new byte[] {1, 2, 3, 4},
-                        TransportMessage = new TransportMessage {MessageType = "test"}
+                        StreamBytes = serializer.Serialize(transportMessage).ToBytes(),
+                        TransportMessage = transportMessage
                     }, queueName);
 
                 Assert.That(response.IsOk, Is.True);
@@ -62,6 +74,60 @@ namespace Shuttle.Esb.NetMQ.Tests
                 Assert.That(isEmptyResponse.Result, Is.False);
 
                 var getMessageResponse = requestClient.GetResponse<GetMessageResponse>(new GetMessageRequest(), queueName);
+
+                Assert.That(response.IsOk, Is.True);
+
+                transportMessage = (TransportMessage)serializer.Deserialize(typeof(TransportMessage), new MemoryStream(getMessageResponse.StreamBytes));
+
+                Assert.That(transportMessage.MessageType, Is.EqualTo("test"));
+
+                var bytes = transportMessage.Message.ToArray();
+
+                Assert.That(bytes[0], Is.EqualTo(1));
+                Assert.That(bytes[1], Is.EqualTo(2));
+                Assert.That(bytes[2], Is.EqualTo(3));
+                Assert.That(bytes[3], Is.EqualTo(4));
+
+                isEmptyResponse = requestClient.GetResponse<IsEmptyResponse>(new IsEmptyRequest(), queueName);
+
+                Assert.That(isEmptyResponse.Result, Is.True);
+
+                response = requestClient.GetResponse<Response>(
+                    new ReleaseRequest {AcknowledgementToken = getMessageResponse.AcknowledgementToken}, queueName);
+
+                Assert.That(response.IsOk, Is.True);
+
+                isEmptyResponse = requestClient.GetResponse<IsEmptyResponse>(new IsEmptyRequest(), queueName);
+
+                Assert.That(isEmptyResponse.Result, Is.False);
+
+                getMessageResponse = requestClient.GetResponse<GetMessageResponse>(new GetMessageRequest(), queueName);
+
+                Assert.That(getMessageResponse.IsOk, Is.True);
+
+                isEmptyResponse = requestClient.GetResponse<IsEmptyResponse>(new IsEmptyRequest(), queueName);
+
+                Assert.That(isEmptyResponse.Result, Is.True);
+
+                response = requestClient.GetResponse<Response>(
+                    new AcknowledgeRequest{ AcknowledgementToken = getMessageResponse.AcknowledgementToken }, queueName);
+
+                Assert.That(response.IsOk, Is.True);
+
+                response = requestClient.GetResponse<Response>(
+                    new ReleaseRequest { AcknowledgementToken = getMessageResponse.AcknowledgementToken }, queueName);
+
+                Assert.That(response.IsOk, Is.True);
+
+                isEmptyResponse = requestClient.GetResponse<IsEmptyResponse>(new IsEmptyRequest(), queueName);
+
+                Assert.That(isEmptyResponse.Result, Is.True);
+
+                getMessageResponse = requestClient.GetResponse<GetMessageResponse>(new GetMessageRequest(), queueName);
+
+                Assert.That(getMessageResponse.IsOk, Is.True);
+                Assert.That(getMessageResponse.AcknowledgementToken, Is.Null);
+                Assert.That(getMessageResponse.StreamBytes, Is.Null);
             }
             finally
             {
