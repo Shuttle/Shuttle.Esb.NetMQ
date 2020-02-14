@@ -8,11 +8,11 @@ using Shuttle.Esb.NetMQ.Server;
 namespace Shuttle.Esb.NetMQ.Tests
 {
     [TestFixture]
-    public class NetMQSectionFixture
+    public class NetMQServerSectionFixture
     {
-        protected NetMQSection GetNetMQSection(string file)
+        protected NetMQServerSection GetNetMQServerSection(string file)
         {
-            return ConfigurationSectionProvider.OpenFile<NetMQSection>("shuttle", "netmq",
+            return ConfigurationSectionProvider.OpenFile<NetMQServerSection>("shuttle", "netmq",
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $@".\.files\{file}"));
         }
 
@@ -21,7 +21,7 @@ namespace Shuttle.Esb.NetMQ.Tests
         [TestCase("NetMQ-Grouped.config")]
         public void Should_be_able_to_load_a_valid_configuration(string file)
         {
-            var section = GetNetMQSection(file);
+            var section = GetNetMQServerSection(file);
 
             Assert.That(section, Is.Not.Null);
             Assert.That(section.Queues, Is.Not.Null);

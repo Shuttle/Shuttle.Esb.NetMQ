@@ -7,12 +7,13 @@ using Shuttle.Core.Ninject;
 using Shuttle.Core.Pipelines;
 using Shuttle.Core.Reflection;
 using Shuttle.Core.Serialization;
+using Shuttle.Esb.NetMQ.Server.Processing;
 
 namespace Shuttle.Esb.NetMQ.Server
 {
     public class ContainerFactory
     {
-        public static NinjectComponentContainer Create(IKernel kernel, INetMQConfiguration configuration)
+        public static NinjectComponentContainer Create(IKernel kernel, INetMQServerConfiguration configuration)
         {
             Guard.AgainstNull(kernel, nameof(kernel));
             Guard.AgainstNull(configuration, nameof(configuration));

@@ -1,7 +1,7 @@
 ﻿using System;
 using Shuttle.Core.Contract;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server
 {
     public class QueueConfiguration
     {

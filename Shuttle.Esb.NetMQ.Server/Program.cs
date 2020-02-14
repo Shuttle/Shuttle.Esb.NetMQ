@@ -10,6 +10,7 @@ using Shuttle.Core.Ninject;
 using Shuttle.Core.Reflection;
 using Shuttle.Core.Serialization;
 using Shuttle.Core.ServiceHost;
+using Shuttle.Esb.NetMQ.Server.Processing;
 using ILog = Shuttle.Core.Logging.ILog;
 
 namespace Shuttle.Esb.NetMQ.Server
@@ -48,7 +49,7 @@ namespace Shuttle.Esb.NetMQ.Server
 
             _kernel = new StandardKernel();
 
-            var configuration = NetMQSection.GetConfiguration();
+            var configuration = NetMQServerSection.GetConfiguration();
             var container = ContainerFactory.Create(_kernel, configuration);
 
             var queueFactoryType = typeof(IQueueFactory);

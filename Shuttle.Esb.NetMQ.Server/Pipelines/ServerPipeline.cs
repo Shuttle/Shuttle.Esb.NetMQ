@@ -1,17 +1,18 @@
 ﻿using Shuttle.Core.Contract;
 using Shuttle.Core.Pipelines;
+using Shuttle.Esb.NetMQ.Server.Pipelines.Observers;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Pipelines
 {
     public class ServerPipeline : Pipeline
     {
         public ServerPipeline(IGetFrameObserver getFrameObserver,
             IDeserializeTransportFrameObserver deserializeTransportFrameObserver,
-            IDeserializeMessageObserver deserializeMessageObserver, IHandleRequestObserver handleRequestObserver,
-            ISerializeMessageObserver serializeMessageObserver,
+            Observers.IDeserializeMessageObserver deserializeMessageObserver, IHandleRequestObserver handleRequestObserver,
+            Observers.ISerializeMessageObserver serializeMessageObserver,
             ISerializeTransportFrameObserver serializeTransportFrameObserver,
             ISendFrameObserver sendFrameObserver,
-            IReceiveExceptionObserver exceptionObserver)
+            Observers.IReceiveExceptionObserver exceptionObserver)
         {
             Guard.AgainstNull(getFrameObserver, nameof(getFrameObserver));
             Guard.AgainstNull(deserializeTransportFrameObserver, nameof(deserializeTransportFrameObserver));

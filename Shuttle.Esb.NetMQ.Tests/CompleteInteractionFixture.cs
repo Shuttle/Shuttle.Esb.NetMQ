@@ -9,6 +9,7 @@ using Shuttle.Core.Reflection;
 using Shuttle.Core.Serialization;
 using Shuttle.Core.Streams;
 using Shuttle.Esb.NetMQ.Server;
+using Shuttle.Esb.NetMQ.Server.Processing;
 
 namespace Shuttle.Esb.NetMQ.Tests
 {
@@ -21,7 +22,7 @@ namespace Shuttle.Esb.NetMQ.Tests
             const int port = 3030;
             const string queueName = "memory-queue";
 
-            var configuration = new NetMQConfiguration
+            var configuration = new NetMQServerConfiguration
             {
                 Port = port
             };

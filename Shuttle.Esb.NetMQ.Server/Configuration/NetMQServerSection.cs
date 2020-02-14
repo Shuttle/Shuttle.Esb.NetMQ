@@ -5,7 +5,7 @@ using Shuttle.Core.Contract;
 
 namespace Shuttle.Esb.NetMQ.Server
 {
-    public class NetMQSection : ConfigurationSection
+    public class NetMQServerSection : ConfigurationSection
     {
         [ConfigurationProperty("port", IsRequired = true)]
         public int Port => (int) this["port"];
@@ -13,29 +13,25 @@ namespace Shuttle.Esb.NetMQ.Server
         [ConfigurationProperty("serializerType", IsRequired = false, DefaultValue = "")]
         public string SerializerType => (string) this["serializerType"];
 
-        [ConfigurationProperty("requestTimeout", IsRequired = false, DefaultValue = "00:00:01")]
-        public TimeSpan RequestTimeout => TimeSpan.Parse((string) this["requestTimeout"]);
-
         [ConfigurationProperty("queues", IsRequired = true)]
         public QueueElementCollection Queues => (QueueElementCollection) this["queues"];
 
         [ConfigurationProperty("queueFactories", IsRequired = false, DefaultValue = null)]
         public QueueFactoriesElement QueueFactories => (QueueFactoriesElement) this["queueFactories"];
 
-        public static INetMQConfiguration GetConfiguration()
+        public static INetMQServerConfiguration GetConfiguration()
         {
-            var section = ConfigurationSectionProvider.Open<NetMQSection>("shuttle", "netmq");
+            var section = ConfigurationSectionProvider.Open<NetMQServerSection>("shuttle", "netmq");
 
             if (section == null)
             {
                 throw new ConfigurationErrorsException(Resources.ConfigurationSectionMissing);
             }
 
-            var result = new NetMQConfiguration
+            var result = new NetMQServerConfiguration
             {
                 Port = section.Port,
-                SerializerType = section.SerializerType,
-                RequestTimeout = section.RequestTimeout
+                SerializerType = section.SerializerType
             };
 
             if (section.Queues.Count < 1)

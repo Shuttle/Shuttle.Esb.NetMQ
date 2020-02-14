@@ -2,7 +2,7 @@
 using Shuttle.Core.Pipelines;
 using Shuttle.Core.Threading;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Processing
 {
     public class ServerProcessorFactory : IProcessorFactory
     {

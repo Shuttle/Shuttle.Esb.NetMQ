@@ -3,8 +3,9 @@ using Shuttle.Core.Logging;
 using Shuttle.Core.Pipelines;
 using Shuttle.Core.Reflection;
 using Shuttle.Core.Serialization;
+using Shuttle.Esb.NetMQ.Server.Processing;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Pipelines.Observers
 {
     public interface IReceiveExceptionObserver : IPipelineObserver<OnPipelineException>
     {

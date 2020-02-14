@@ -1,6 +1,6 @@
 ﻿using Shuttle.Core.Pipelines;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Pipelines
 {
     public class OnDeserializeMessage : PipelineEvent
     {

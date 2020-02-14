@@ -1,7 +1,8 @@
 ﻿using Shuttle.Core.Contract;
 using Shuttle.Core.Pipelines;
+using Shuttle.Esb.NetMQ.Server.Processing;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Pipelines.Observers
 {
     public interface IGetFrameObserver : IPipelineObserver<OnGetFrame>
     {

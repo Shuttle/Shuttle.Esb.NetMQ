@@ -3,7 +3,7 @@ using Shuttle.Core.Contract;
 using Shuttle.Core.Pipelines;
 using Shuttle.Core.Threading;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Processing
 {
     public class NetMQServer : INetMQServer, IDisposable
     {

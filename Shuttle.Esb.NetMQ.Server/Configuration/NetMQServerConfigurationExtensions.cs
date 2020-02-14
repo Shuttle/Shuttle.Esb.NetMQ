@@ -3,11 +3,11 @@ using System.Configuration;
 using Shuttle.Core.Contract;
 using Shuttle.Core.Serialization;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server
 {
-    public static class NetMQConfigurationExtensions
+    public static class NetMQServerConfigurationExtensions
     {
-        public static Type GetSerializerType(this INetMQConfiguration configuration)
+        public static Type GetSerializerType(this INetMQServerConfiguration configuration)
         {
             Guard.AgainstNull(configuration, nameof(configuration));
 
@@ -22,7 +22,7 @@ namespace Shuttle.Esb.NetMQ
             }
             catch
             {
-                throw new ConfigurationErrorsException(string.Format(Resources.UnknownSerializerType, configuration.SerializerType));
+                throw new ConfigurationErrorsException(string.Format(NetMQ.Resources.UnknownSerializerType, configuration.SerializerType));
             }
         }
     }

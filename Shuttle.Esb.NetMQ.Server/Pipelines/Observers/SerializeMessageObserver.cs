@@ -3,7 +3,7 @@ using Shuttle.Core.Pipelines;
 using Shuttle.Core.Serialization;
 using Shuttle.Core.Streams;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Pipelines.Observers
 {
     public interface ISerializeMessageObserver : IPipelineObserver<OnSerializeMessage>
     {

@@ -4,7 +4,7 @@ using Shuttle.Core.Contract;
 using Shuttle.Core.Pipelines;
 using Shuttle.Core.Streams;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Pipelines.Observers
 {
     public interface IHandleRequestObserver : IPipelineObserver<OnHandleRequest>
     {
@@ -12,10 +12,10 @@ namespace Shuttle.Esb.NetMQ
 
     public class HandleRequestObserver : IHandleRequestObserver
     {
-        private readonly INetMQConfiguration _configuration;
+        private readonly INetMQServerConfiguration _configuration;
         private readonly IQueueManager _queueManager;
 
-        public HandleRequestObserver(IQueueManager queueManager, INetMQConfiguration configuration)
+        public HandleRequestObserver(IQueueManager queueManager, INetMQServerConfiguration configuration)
         {
             Guard.AgainstNull(queueManager, nameof(queueManager));
             Guard.AgainstNull(configuration, nameof(configuration));
@@ -83,7 +83,7 @@ namespace Shuttle.Esb.NetMQ
                 }
                 default:
                 {
-                    throw new ApplicationException(string.Format(Resources.UnknownRequestType,
+                    throw new ApplicationException(string.Format(NetMQ.Resources.UnknownRequestType,
                         message.GetType().FullName));
                 }
             }

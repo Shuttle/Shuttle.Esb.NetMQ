@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,42 +7,24 @@ using NetMQ.Sockets;
 using Shuttle.Core.Contract;
 using Shuttle.Core.Streams;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Processing
 {
     public class NetMQRequestServer : INetMQRequestServer, IDisposable
     {
-        private readonly ResponseSocket _responseSocket;
         private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly ResponseSocket _responseSocket;
         private readonly Task _task;
-        private Stream _stream = null;
+        private Stream _stream;
 
-        public NetMQRequestServer(INetMQConfiguration configuration)
+        public NetMQRequestServer(INetMQServerConfiguration configuration)
         {
             _responseSocket = new ResponseSocket();
             _responseSocket.Bind($"tcp://localhost:{configuration.Port}");
 
-            _task = Task.Run(Listen);
+            // ReSharper disable once ConvertClosureToMethodGroup
+            _task = Task.Run(() => Listen());
         }
 
-        private void Listen()
-        {
-            var timeout = TimeSpan.FromSeconds(1);
-            var cancellationToken = _cancellationTokenSource.Token;
-
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                if (_stream != null)
-                {
-                    continue;
-                }
-
-                if (_responseSocket.TryReceiveFrameBytes(timeout, out var bytes))
-                {
-                    _stream = new MemoryStream(bytes);
-                }
-            }
-        }
-        
         public void Dispose()
         {
             _cancellationTokenSource?.Cancel();
@@ -66,6 +47,25 @@ namespace Shuttle.Esb.NetMQ
 
             _stream.Dispose();
             _stream = null;
+        }
+
+        private void Listen()
+        {
+            var timeout = TimeSpan.FromSeconds(1);
+            var cancellationToken = _cancellationTokenSource.Token;
+
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                if (_stream != null)
+                {
+                    continue;
+                }
+
+                if (_responseSocket.TryReceiveFrameBytes(timeout, out var bytes))
+                {
+                    _stream = new MemoryStream(bytes);
+                }
+            }
         }
     }
 }

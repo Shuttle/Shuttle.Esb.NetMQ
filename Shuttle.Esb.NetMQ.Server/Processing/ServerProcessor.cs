@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Shuttle.Core.Contract;
 using Shuttle.Core.Pipelines;
 using Shuttle.Core.Threading;
+using Shuttle.Esb.NetMQ.Server.Pipelines;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Processing
 {
     public class ServerProcessor : IProcessor
     {
@@ -24,7 +24,7 @@ namespace Shuttle.Esb.NetMQ
             try
             {
                 pipeline.State.ResetWorking();
-                pipeline.State.Replace(StateKeys.CancellationToken, cancellationToken);
+                pipeline.State.Replace(Pipelines.StateKeys.CancellationToken, cancellationToken);
 
                 pipeline.Execute();
             }

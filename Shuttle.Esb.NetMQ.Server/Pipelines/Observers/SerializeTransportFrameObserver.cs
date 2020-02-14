@@ -1,11 +1,9 @@
-﻿using System;
-using System.IO;
-using Shuttle.Core.Contract;
+﻿using Shuttle.Core.Contract;
 using Shuttle.Core.Logging;
 using Shuttle.Core.Pipelines;
 using Shuttle.Core.Serialization;
 
-namespace Shuttle.Esb.NetMQ
+namespace Shuttle.Esb.NetMQ.Server.Pipelines.Observers
 {
     public interface ISerializeTransportFrameObserver : IPipelineObserver<OnSerializeTransportFrame>
     {

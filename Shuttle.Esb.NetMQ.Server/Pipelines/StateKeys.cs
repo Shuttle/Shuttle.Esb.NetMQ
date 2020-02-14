@@ -1,4 +1,4 @@
-﻿namespace Shuttle.Esb.NetMQ
+﻿namespace Shuttle.Esb.NetMQ.Server.Pipelines
 {
     public static class StateKeys
     {
